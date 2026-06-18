@@ -1,0 +1,58 @@
+name: test
+
+# The self-test renders a fixture .krs through this action, which runs
+# `npx karasu@latest render …`. It is currently **manual-only** because the
+# published `karasu` package is missing its build (kompiro/karasu#1681) — until
+# a working version ships, `npx karasu` cannot run and this test would fail for
+# reasons unrelated to the action. Re-enable the `push` / `pull_request`
+# triggers below once `karasu@latest` renders again.
+on:
+  # push:
+  #   branches: [main]
+  # pull_request:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "karasu npm version to test against"
+        required: false
+        default: "latest"
+
+jobs:
+  render-all-views:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Render all views (uses the action from this repo)
+        uses: ./
+        with:
+          input: test/architecture.krs
+          output: out/architecture.svg
+          version: ${{ inputs.version }}
+
+      - name: Assert the SVG was produced
+        run: |
+          set -euo pipefail
+          test -s out/architecture.svg
+          grep -q "<svg" out/architecture.svg
+          echo "OK: out/architecture.svg ($(wc -c < out/architecture.svg) bytes)"
+
+  render-single-view:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Render the system view only
+        uses: ./
+        with:
+          input: test/architecture.krs
+          output: out/system.svg
+          view: system
+          version: ${{ inputs.version }}
+
+      - name: Assert the SVG was produced
+        run: |
+          set -euo pipefail
+          test -s out/system.svg
+          grep -q "<svg" out/system.svg
+          echo "OK: out/system.svg ($(wc -c < out/system.svg) bytes)"

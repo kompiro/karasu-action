@@ -1,0 +1,44 @@
+name: "karasu render"
+description: "Render karasu .krs architecture diagrams to SVG in your CI pipeline."
+author: "kompiro"
+
+branding:
+  icon: "image"
+  color: "purple"
+
+inputs:
+  input:
+    description: "Path to the entry .krs file (imports are resolved relative to it)."
+    required: true
+  output:
+    description: "Path to write the rendered SVG."
+    required: true
+  version:
+    description: "karasu npm version to use (e.g. 0.0.1, latest)."
+    required: false
+    default: "latest"
+  view:
+    description: "Render a single view: system | deploy | org. Omit to render all views into one SVG."
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - name: Render karasu diagram
+      shell: bash
+      env:
+        # Pass inputs through the environment rather than interpolating
+        # `${{ inputs.* }}` into the script, so a crafted input can't inject shell.
+        KARASU_INPUT: ${{ inputs.input }}
+        KARASU_OUTPUT: ${{ inputs.output }}
+        KARASU_VERSION: ${{ inputs.version }}
+        KARASU_VIEW: ${{ inputs.view }}
+      run: |
+        set -euo pipefail
+        args=(render "$KARASU_INPUT" --output "$KARASU_OUTPUT")
+        if [ -n "$KARASU_VIEW" ]; then
+          args+=(--view "$KARASU_VIEW")
+        fi
+        echo "Running: npx --yes karasu@${KARASU_VERSION} ${args[*]}"
+        npx --yes "karasu@${KARASU_VERSION}" "${args[@]}"

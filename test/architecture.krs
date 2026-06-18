@@ -1,0 +1,20 @@
+system Shop {
+  user Customer [human] {
+    description "Buys products"
+  }
+  service Storefront {
+    label "Storefront"
+    domain Catalog {
+      usecase BrowseProducts { label "Browse products" }
+    }
+  }
+  service Checkout {
+    label "Checkout"
+    domain Orders {
+      usecase PlaceOrder { label "Place an order" }
+    }
+  }
+
+  Customer  -> Storefront "Browse"
+  Storefront -> Checkout  "Hand off to checkout"
+}
