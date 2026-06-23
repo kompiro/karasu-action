@@ -7,12 +7,6 @@ of copy-pasting workflow YAML.
 karasu is a text-based architecture modeling tool inspired by the C4 model, with
 its own vocabulary separating logical, physical, and organizational structure.
 
-> **Status:** the action is complete, but it depends on a working published
-> `karasu` CLI. The current `karasu@0.0.1` on npm is missing its build
-> ([kompiro/karasu#1681](https://github.com/kompiro/karasu/issues/1681)); once a
-> fixed version ships, `npx karasu render` (and therefore this action) works as
-> documented. Pin `version:` to that release when it lands.
-
 ## Usage
 
 ```yaml
@@ -65,7 +59,7 @@ so readers see up-to-date diagrams without installing anything.
 | --- | --- | --- | --- |
 | `input` | ✅ | — | Path to the entry `.krs` file. `@import`s are resolved relative to it, so you only point at the top-level file. |
 | `output` | ✅ | — | Path to write the SVG. |
-| `version` | | `latest` | The `karasu` npm version to run (e.g. `0.0.1`). Pin it to avoid unexpected changes. |
+| `version` | | `latest` | The `karasu` npm version to run (e.g. `0.1.0`). Pin it to avoid unexpected changes. |
 | `view` | | _(all)_ | Render a single view: `system`, `deploy`, or `org`. Omit to render all views bundled into one SVG with tab navigation. |
 
 ### Rendering a single view
@@ -85,7 +79,7 @@ so readers see up-to-date diagrams without installing anything.
   with:
     input: docs/index.krs
     output: docs/architecture.svg
-    version: "0.0.1"
+    version: "0.1.0"
 ```
 
 ## Migrating from the workflow templates
