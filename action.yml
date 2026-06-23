@@ -36,6 +36,9 @@ runs:
         KARASU_VIEW: ${{ inputs.view }}
       run: |
         set -euo pipefail
+        # karasu render writes the SVG with writeFile and does not create the
+        # parent directory, so make sure it exists first.
+        mkdir -p "$(dirname "$KARASU_OUTPUT")"
         args=(render "$KARASU_INPUT" --output "$KARASU_OUTPUT")
         if [ -n "$KARASU_VIEW" ]; then
           args+=(--view "$KARASU_VIEW")

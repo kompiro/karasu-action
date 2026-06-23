@@ -124,7 +124,8 @@ steps:
 
 ## How it works
 
-This is a thin composite action: it runs
+This is a thin composite action: it creates the parent directory of `output` if
+needed, then runs
 `npx --yes karasu@<version> render <input> --output <output> [--view <view>]`.
 Inputs are passed through the environment (not interpolated into the shell) so a
 crafted value can't inject commands.
