@@ -1,15 +1,12 @@
 name: test
 
 # The self-test renders a fixture .krs through this action, which runs
-# `npx karasu@latest render …`. It is currently **manual-only** because the
-# published `karasu` package is missing its build (kompiro/karasu#1681) — until
-# a working version ships, `npx karasu` cannot run and this test would fail for
-# reasons unrelated to the action. Re-enable the `push` / `pull_request`
-# triggers below once `karasu@latest` renders again.
+# `npx karasu@<version> render …`. It runs on every push / PR (against
+# `karasu@latest`) and can also be dispatched manually to pin a specific version.
 on:
-  # push:
-  #   branches: [main]
-  # pull_request:
+  push:
+    branches: [main]
+  pull_request:
   workflow_dispatch:
     inputs:
       version:
@@ -28,7 +25,7 @@ jobs:
         with:
           input: test/architecture.krs
           output: out/architecture.svg
-          version: ${{ inputs.version }}
+          version: ${{ inputs.version || 'latest' }}
 
       - name: Assert the SVG was produced
         run: |
@@ -48,7 +45,7 @@ jobs:
           input: test/architecture.krs
           output: out/system.svg
           view: system
-          version: ${{ inputs.version }}
+          version: ${{ inputs.version || 'latest' }}
 
       - name: Assert the SVG was produced
         run: |
